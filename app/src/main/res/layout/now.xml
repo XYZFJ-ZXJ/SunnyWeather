@@ -12,6 +12,15 @@
         android:layout_height="70dp"
         android:fitsSystemWindows="true">
 
+        <!-- Button按钮是650页中间添加的，用于实现城市的切换功能 -->
+        <Button
+            android:id="@+id/navBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_home" />
+
         <TextView
             android:id="@+id/placeName"
             android:layout_width="wrap_content"

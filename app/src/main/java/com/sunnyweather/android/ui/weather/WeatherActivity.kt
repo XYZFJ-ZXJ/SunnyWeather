@@ -57,8 +57,30 @@ class WeatherActivity : AppCompatActivity() {
                 Toast.makeText(this, "无法成功获取天气信息", Toast.LENGTH_SHORT).show()
                 result.exceptionOrNull()?.printStackTrace()
             }
+            //648
+            swipeRefresh.isRefreshing = false
         })
-        viewModel.refreshWeather(viewModel.locationLng,viewModel.locationLat)
+        //540
+        //viewModel.refreshWeather(viewModel.locationLng,viewModel.locationLat)
+        //648
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
+        refreshWeather()
+        swipeRefresh.setOnRefreshListener {
+            refreshWeather()
+        }
+        //651页加入,滑动菜单的处理逻辑
+        navBtn.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerStateChanged(newState: Int) {}
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerOpened(drawerView: View) {}
+            override fun onDrawerClosed(drawerView: View) {
+                val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(drawerView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            }
+        })
     }
 
     //641
@@ -100,6 +122,12 @@ class WeatherActivity : AppCompatActivity() {
         ultravioletText.text = lifeIndex.ultraviolet[0].desc
         carWashingText.text = lifeIndex.carWashing[0].desc
         weatherLayout.visibility = View.VISIBLE
+    }
+
+    //648
+    fun refreshWeather() {
+        viewModel.refreshWeather(viewModel.locationLng, viewModel.locationLat)
+        swipeRefresh.isRefreshing = true
     }
 
 }

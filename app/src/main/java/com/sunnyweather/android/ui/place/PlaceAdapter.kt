@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sunnyweather.android.R
 import com.sunnyweather.android.logic.model.Place
 import com.sunnyweather.android.ui.weather.WeatherActivity
+import kotlinx.android.synthetic.main.activity_weather.*
 
 //import com.sunnyweather.android.ui.weather.WeatherActivity
 //import kotlinx.android.synthetic.main.activity_weather.*
@@ -37,16 +38,36 @@ class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: L
         holder.itemView.setOnClickListener {
             val position = holder.adapterPosition
             val place = placeList[position]
+            //642页使用的形式
+            /*
             val intent = Intent(parent.context, WeatherActivity::class.java).apply {
                 putExtra("location_lng", place.location.lng)
                 putExtra("location_lat", place.location.lat)
                 putExtra("place_name", place.name)
             }
+             */
+            //在上面642页的基础上修改，加入新内容处理切换城市后的逻辑
+            val activity = fragment.activity
+            if (activity is WeatherActivity) {
+                activity.drawerLayout.closeDrawers()
+                activity.viewModel.locationLng = place.location.lng
+                activity.viewModel.locationLat = place.location.lat
+                activity.viewModel.placeName = place.name
+                activity.refreshWeather()
+            } else {
+                val intent = Intent(parent.context, WeatherActivity::class.java).apply {
+                    putExtra("location_lng", place.location.lng)
+                    putExtra("location_lat", place.location.lat)
+                    putExtra("place_name", place.name)
+                }
+                fragment.startActivity(intent)
+                activity?.finish()
+            }
             //646
             fragment.viewModel.savePlace(place)
-            //642
-            fragment.startActivity(intent)
-            fragment.activity?.finish()
+            //642,653页被迁移到了if语句块里面
+            //fragment.startActivity(intent)
+            //fragment.activity?.finish()
         }
         return holder
     }
