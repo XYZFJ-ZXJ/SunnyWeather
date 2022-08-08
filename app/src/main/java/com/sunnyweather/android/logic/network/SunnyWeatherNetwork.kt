@@ -9,10 +9,15 @@ import kotlin.coroutines.suspendCoroutine
 
 //617页加入的内容
 object SunnyWeatherNetwork {
-
+    //617,await()是自定义方法,定义在下面
     private val placeService = ServiceCreator.create(PlaceService::class.java)
     suspend fun searchPlaces(query: String) = placeService.searchPlaces(query).await()
+    //628
+    private val weatherService = ServiceCreator.create(WeatherService::class.java)
+    suspend fun getDailyWeather(lng: String, lat: String) = weatherService.getDailyWeather(lng, lat).await()
+    suspend fun getRealtimeWeather(lng: String, lat: String) = weatherService.getRealtimeWeather(lng, lat).await()
 
+    //617
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->
             enqueue(object : Callback<T> {
